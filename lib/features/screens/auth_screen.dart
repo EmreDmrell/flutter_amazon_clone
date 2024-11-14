@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_amazon_clone/common/widgets/custom_button.dart';
 import 'package:flutter_amazon_clone/common/widgets/custom_text_field.dart';
 import 'package:flutter_amazon_clone/constants/global_variables.dart';
+import 'package:flutter_amazon_clone/features/services/auth/auth_service.dart';
+
+import '../../common/widgets/password_text_field.dart';
 
 enum Auth { signIn, signUp }
 
@@ -18,6 +21,7 @@ class _AuthScreenState extends State<AuthScreen> {
   Auth _auth = Auth.signIn;
   final _signUpFormKey = GlobalKey<FormState>();
   final _signInFormKey = GlobalKey<FormState>();
+  final AuthService authService = AuthService();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
@@ -30,7 +34,9 @@ class _AuthScreenState extends State<AuthScreen> {
     super.dispose();
   }
 
-  void signUpUser() {}
+  void signUpUser() {
+    authService.signUpUser(context: context, email: _emailController.text, password: _passwordController.text, name: _nameController.text);
+  }
 
   void signInUser() {}
 
@@ -73,15 +79,15 @@ class _AuthScreenState extends State<AuthScreen> {
                         key: _signUpFormKey,
                         child: Column(
                           children: [
-                            CustomTextField(controller: _nameController, hintText: 'Name'),
+                            CustomTextField(controller: _nameController, hintText: 'Name', keyboardType: TextInputType.text, icon: const Icon(Icons.account_circle_outlined, size: 24,),),
                             const SizedBox(
                               height: 10,
                             ),
-                            CustomTextField(controller: _emailController, hintText: 'e-Mail'),
+                            CustomTextField(controller: _emailController, hintText: 'e-Mail', keyboardType: TextInputType.emailAddress,icon : const Icon(Icons.email_outlined, size: 24,)),
                             const SizedBox(
                               height: 10,
                             ),
-                            CustomTextField(controller: _passwordController, hintText: 'Password'),
+                            PasswordTextField(controller: _passwordController, hintText: 'Password',keyboardType: TextInputType.visiblePassword,),
                             const SizedBox(
                               height: 10,
                             ),
@@ -121,9 +127,9 @@ class _AuthScreenState extends State<AuthScreen> {
                       key: _signInFormKey,
                       child: Column(
                         children: [
-                          CustomTextField(controller: _emailController, hintText: 'e-Mail'),
+                          CustomTextField(controller: _emailController, hintText: 'e-Mail', keyboardType: TextInputType.emailAddress, icon:  const Icon(Icons.email_outlined, size: 24,),),
                           const SizedBox(height: 10,),
-                          CustomTextField(controller: _passwordController, hintText: 'Password'),
+                          PasswordTextField(controller: _passwordController, hintText: 'Password', keyboardType: TextInputType.visiblePassword,),
                           const SizedBox(height: 10,),
                           CustomButton(
                               text: 'Sign In',

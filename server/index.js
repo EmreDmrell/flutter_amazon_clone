@@ -17,6 +17,7 @@ const DB = mongoDbUri;
 
 //middleware 
 
+app.use(express.json());
 app.use(authRouter);
 
 //connections
