@@ -29,6 +29,7 @@ class CustomTextField extends StatelessWidget {
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Colors.black38),
         ),
+        prefixIcon: icon ?? null,
       ),
       validator: (val) {
         if (val == null || val.isEmpty) {

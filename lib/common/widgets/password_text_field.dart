@@ -35,7 +35,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
     return TextFormField(
       controller: widget.controller,
       keyboardType: widget.keyboardType,
-      obscureText: true,
+      obscureText: _obscured,
       decoration: InputDecoration(
         hintText: widget.hintText,
         border: const OutlineInputBorder(
