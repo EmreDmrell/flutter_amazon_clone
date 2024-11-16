@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_amazon_clone/common/widgets/custom_button.dart';
 import 'package:flutter_amazon_clone/common/widgets/custom_text_field.dart';
 import 'package:flutter_amazon_clone/constants/global_variables.dart';
-import 'package:flutter_amazon_clone/features/services/auth/auth_service.dart';
+import 'package:flutter_amazon_clone/features/auth/services/auth_service.dart';
 
-import '../../common/widgets/password_text_field.dart';
+import '../../../common/widgets/password_text_field.dart';
 
 enum Auth { signIn, signUp }
 
@@ -38,7 +38,9 @@ class _AuthScreenState extends State<AuthScreen> {
     authService.signUpUser(context: context, email: _emailController.text, password: _passwordController.text, name: _nameController.text);
   }
 
-  void signInUser() {}
+  void signInUser() {
+    authService.signInUser(context: context,email: _emailController.text, password: _passwordController.text,);
+  }
 
   @override
   Widget build(BuildContext context) {
