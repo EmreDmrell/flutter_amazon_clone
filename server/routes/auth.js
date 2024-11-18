@@ -3,11 +3,12 @@ const User = require("../models/user");
 const cryptValues = require("../constants/hash_password_variables");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const auth_middleware = require("../middlewares/auth_middleware");
 
 const authRouter = express.Router();
 const saltRound = cryptValues.saltRounds;
 
-authRouter.post("/signup", async (req, res) => {
+authRouter.post("/api/signup", async (req, res) => {
     try {
         const {name, email, password} = req.body;
     
@@ -33,7 +34,7 @@ authRouter.post("/signup", async (req, res) => {
     }
 });
 
-authRouter.post("/signin", async (req, res) => {
+authRouter.post("/api/signin", async (req, res) => {
     try {
         const {email, password} = req.body;
 
@@ -63,4 +64,30 @@ authRouter.post("/signin", async (req, res) => {
     }
 });
 
+authRouter.post("/tokenIsValid", async (req, res) => {
+    try {
+        const token = req.header('x-auth*token');
+        if(!token) return res.json(false);
+        const verified = jwt.verify(token, cryptValues.jwtKey);
+        if (!verified) return res.json(false);
+
+        const user = await User.findById(verified.id);
+        if(!user) return json(false);
+
+        res.json(true);
+    } catch (e) {
+        res.status(500).json({error : e.message});
+    }
+});
+
+
+// get user data
+authRouter.get("/", auth_middleware, async (req, res) => {
+    try {
+        const user = await User.findById(req.user);
+        res.json({ ...user._doc, token : req.token});
+    } catch (e) {
+        res.status(500).json({error : e.message});
+    }
+});
 module.exports = authRouter;
