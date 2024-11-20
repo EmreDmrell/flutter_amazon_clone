@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_amazon_clone/constants/errorHandling.dart';
 import 'package:flutter_amazon_clone/constants/ip_addresses.dart';
 import 'package:flutter_amazon_clone/constants/utils.dart';
-import 'package:flutter_amazon_clone/features/home/screens/home_screen.dart';
 import 'package:flutter_amazon_clone/models/User/user.dart';
 import 'package:flutter_amazon_clone/providers/user_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
+
+import '../../../common/widgets/bottom_bar.dart';
 
 class AuthService {
   void signUpUser({
@@ -20,7 +21,7 @@ class AuthService {
     required String name,
   }) async {
     try {
-      User user = User('', name, email, password, '', '', '');
+      User user = User('', name, email, password, '', '', '', );
 
       http.Response response = await http.post(
         Uri.parse('$homeIpAddress/api/signup'),
@@ -63,7 +64,7 @@ class AuthService {
           Provider.of<UserProvider>(context, listen: false).setUser(response.body);
           await prefs.setString('x-auth-token', jsonDecode(response.body)['token']);
           
-          Navigator.pushNamedAndRemoveUntil(context, HomeScreen.routeName, (route) => false);
+          Navigator.pushNamedAndRemoveUntil(context, BottomBar.routeName, (route) => false);
         },
       );
     } catch (e) {

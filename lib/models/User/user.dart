@@ -11,8 +11,9 @@ class User{
   final String address;
   final String type;
   final String token;
+  //final List<dynamic> cart;
 
-  User(this.id, this.name, this.email,this.password, this.address, this.type, this.token);
+  User(this.id, this.name, this.email,this.password, this.address, this.type, this.token,);
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
