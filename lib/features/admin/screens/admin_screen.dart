@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_amazon_clone/constants/global_variables.dart';
 
 import 'package:badges/badges.dart' as badges;
+import 'package:flutter_amazon_clone/features/admin/screens/posts_screen.dart';
 import 'package:flutter_amazon_clone/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -20,11 +21,7 @@ class _AdminPageState extends State<AdminScreen> {
   double adminPageBorderWidth = 5;
 
   List<Widget> pages = [
-    const Scaffold(
-      body: Center(
-        child: Text('Post Screen'),
-      ),
-    ),
+    PostsScreen(),
     const Scaffold(
       body: Center(
         child: Text('Post Screen'),
