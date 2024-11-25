@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 //Import from other files 
 
 const authRouter = require('./routes/auth');
+const productRouter = require('./routes/product');
 const mongoDbUri = require('./constants/database_variables')
 
 
@@ -19,6 +20,7 @@ const DB = mongoDbUri;
 
 app.use(express.json());
 app.use(authRouter);
+
 
 //connections
 
