@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_amazon_clone/constants/errorHandling.dart';
-import 'package:flutter_amazon_clone/constants/ip_addresses.dart';
+import 'package:flutter_amazon_clone/constants/config.dart';
 import 'package:flutter_amazon_clone/constants/utils.dart';
 import 'package:flutter_amazon_clone/models/User/user.dart';
 import 'package:flutter_amazon_clone/providers/user_provider.dart';

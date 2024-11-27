@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 const cryptValues = require('../constants/hash_password_variables');
-
 const jwtKey = cryptValues.jwtKey;
 
 const auth_middleware = async (req, res, next) => {
@@ -17,7 +16,7 @@ const auth_middleware = async (req, res, next) => {
         req.token = token;
         next();
     } catch (e) {
-        res.status(500).json({error : e.message})
+        res.status(500).json({error : e.message});
     }
 }
 

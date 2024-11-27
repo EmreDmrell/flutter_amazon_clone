@@ -5,6 +5,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter_amazon_clone/common/widgets/custom_button.dart';
 import 'package:flutter_amazon_clone/common/widgets/custom_text_field.dart';
 import 'package:flutter_amazon_clone/constants/utils.dart';
+import 'package:flutter_amazon_clone/features/admin/services/admin_services.dart';
 
 import '../../../constants/global_variables.dart';
 
@@ -22,6 +23,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
+  final AdminServices adminServices = AdminServices();
 
   List<File> images = [];
   String category = 'Mobiles';
@@ -43,6 +45,20 @@ class _AddProductScreenState extends State<AddProductScreen> {
     setState(() {
       images = res;
     });
+  }
+
+  void sellProduct() {
+    if (_addProductFormKey.currentState!.validate() && images.isNotEmpty) {
+      adminServices.sellProduct(
+        context: context,
+        name: productNameController.text,
+        description: descriptionController.text,
+        price: int.parse(priceController.text),
+        quantity: int.parse(quantityController.text),
+        category: category,
+        images: images,
+      );
+    }
   }
 
   @override
@@ -74,17 +90,15 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 const SizedBox(height: 20),
                 images.isNotEmpty
                     ? CarouselSlider(
-                        items: images.map(
-                            (i) {
-                              return Builder(
-                                builder: (BuildContext context) => Image.file(
-                                  i,
-                                  fit: BoxFit.cover,
-                                  height: 200,
-                                ),
-                              );
-                            }
-                        ).toList(),
+                        items: images.map((i) {
+                          return Builder(
+                            builder: (BuildContext context) => Image.file(
+                              i,
+                              fit: BoxFit.cover,
+                              height: 200,
+                            ),
+                          );
+                        }).toList(),
                         options: CarouselOptions(
                           viewportFraction: 1,
                           height: 200,
@@ -171,7 +185,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 ),
                 CustomButton(
                   text: 'Sell',
-                  onTap: () {},
+                  onTap: sellProduct,
                 ),
               ],
             ),
