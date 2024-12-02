@@ -47,7 +47,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     });
   }
 
-  void sellProduct() {
+  void sellProduct() async{
     if (_addProductFormKey.currentState!.validate() && images.isNotEmpty) {
       adminServices.sellProduct(
         context: context,
