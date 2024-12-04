@@ -7,6 +7,7 @@ import 'package:flutter_amazon_clone/constants/errorHandling.dart';
 import 'package:flutter_amazon_clone/constants/utils.dart';
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:flutter_amazon_clone/models/product/product.dart';
+import 'package:flutter_amazon_clone/providers/product_provider.dart';
 import 'package:flutter_amazon_clone/providers/user_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -45,11 +46,12 @@ class AdminServices {
         headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8', 'x-auth-token': userProvider.user.token},
         body: jsonEncode(product.toJson()),
       );
-      httpErrorHandling (
+      httpErrorHandling(
         response: res,
         context: context,
         onSuccess: () {
           showSnackBar(context, 'Product added successfully');
+          context.read<ProductProvider>().addProduct(product);
           Navigator.pop(context);
         },
       );
@@ -58,9 +60,9 @@ class AdminServices {
     }
   }
 
-  Future<List<Product>> fetchAllProducts(BuildContext context) async {
+  Future<void> fetchAllProducts(BuildContext context) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    List<Product> productList = [];
+    context.read<ProductProvider>().resetProductList();
     try {
       http.Response res = await http.get(
         Uri.parse('$homeIpAddress/admin/get-products'),
@@ -72,7 +74,7 @@ class AdminServices {
         context: context,
         onSuccess: () {
           for (int i = 0; i < jsonDecode(res.body).length; i++) {
-            productList.add(
+            context.read<ProductProvider>().addProduct(
               Product.fromJson(
                 jsonDecode(res.body)[i],
               ),
@@ -80,10 +82,36 @@ class AdminServices {
           }
         },
       );
-
     } catch (e) {
       showSnackBar(context, e.toString());
     }
-    return productList;
+  }
+
+  deleteProduct({
+    required BuildContext context,
+    required Product product,
+    required VoidCallback onSuccess,
+  }) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    try {
+      http.Response res = await http.delete(
+          Uri.parse('$homeIpAddress/admin/delete-product'),
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'x-auth-token': userProvider.user.token,
+          },
+          body: jsonEncode({'id': product.id,})
+      );
+
+      httpErrorHandling(
+        response: res,
+        context: context,
+        onSuccess: () {
+          onSuccess();
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
   }
 }

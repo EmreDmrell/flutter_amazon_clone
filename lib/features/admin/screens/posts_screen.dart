@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_amazon_clone/common/widgets/single_product.dart';
 import 'package:flutter_amazon_clone/features/admin/screens/add_product_screen.dart';
 import 'package:flutter_amazon_clone/features/admin/services/admin_services.dart';
+import 'package:flutter_amazon_clone/providers/product_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../../common/widgets/loader.dart';
+import '../../../constants/utils.dart';
 import '../../../models/product/product.dart';
 
 class PostsScreen extends StatefulWidget {
@@ -14,7 +17,6 @@ class PostsScreen extends StatefulWidget {
 }
 
 class _PostsScreenState extends State<PostsScreen> {
-  List<Product>? productList;
   final AdminServices adminServices = AdminServices();
 
   @override
@@ -24,9 +26,19 @@ class _PostsScreenState extends State<PostsScreen> {
   }
 
 
-  fetchAllProducts() async {
-    productList = await adminServices.fetchAllProducts(context);
-    setState(() {});
+  fetchAllProducts() async{
+    await adminServices.fetchAllProducts(context);
+  }
+
+  void deleteProduct(Product product, int index){
+    adminServices.deleteProduct(
+      context: context,
+      product: product,
+      onSuccess: (){
+        showSnackBar(context, "Product deleted successfully");
+        context.read<ProductProvider>().deleteProduct(index);
+      }
+    );
   }
 
   void navigateToAddProduct() {
@@ -35,16 +47,17 @@ class _PostsScreenState extends State<PostsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return productList == null
+    List<Product> productList = context.watch<ProductProvider>().productList;
+    return productList.isEmpty
         ? const Loader()
         : Scaffold(
             body: Padding(
               padding: const EdgeInsets.all(8.0),
               child: GridView.builder(
-                itemCount: productList!.length,
+                itemCount: productList.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
                 itemBuilder: (context, index) {
-                  var productData = productList![index];
+                  var productData = productList[index];
                   return Column(
                     children: [
                       SizedBox(
@@ -62,7 +75,7 @@ class _PostsScreenState extends State<PostsScreen> {
                               maxLines: 2,
                             ),
                           ),
-                          IconButton(onPressed: () {}, icon: const Icon(Icons.delete_outline_rounded))
+                          IconButton(onPressed: () => deleteProduct(productData, index), icon: const Icon(Icons.delete_outline_rounded))
                         ],
                       )
                     ],
@@ -71,11 +84,12 @@ class _PostsScreenState extends State<PostsScreen> {
               ),
             ),
             floatingActionButton: FloatingActionButton(
+              shape: const CircleBorder(eccentricity: 0.5),
               onPressed: navigateToAddProduct,
               tooltip: 'Add a Product',
               child: const Icon(Icons.add),
             ),
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+            floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterFloat,
           );
   }
 }
