@@ -8,11 +8,11 @@ class CustomButton extends StatelessWidget {
   final Color? color;
 
   const CustomButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onTap,
     this.color = GlobalVariables.secondaryColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

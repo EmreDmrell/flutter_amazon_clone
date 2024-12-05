@@ -22,6 +22,7 @@ const DB = mongoDbUri;
 app.use(express.json());
 app.use(authRouter);
 app.use(adminRouter);
+app.use(productRouter);
 
 //connections
 

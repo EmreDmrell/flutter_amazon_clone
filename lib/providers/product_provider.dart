@@ -2,7 +2,7 @@ import 'package:flutter_amazon_clone/models/product/product.dart';
 import 'package:flutter/material.dart';
 
 class ProductProvider extends ChangeNotifier {
-  List<Product> _productList = [];
+  final List<Product> _productList = [];
 
   List<Product> get productList => _productList;
 

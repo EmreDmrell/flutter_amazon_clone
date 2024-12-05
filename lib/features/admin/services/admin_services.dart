@@ -46,17 +46,21 @@ class AdminServices {
         headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8', 'x-auth-token': userProvider.user.token},
         body: jsonEncode(product.toJson()),
       );
-      httpErrorHandling(
-        response: res,
-        context: context,
-        onSuccess: () {
-          showSnackBar(context, 'Product added successfully');
-          context.read<ProductProvider>().addProduct(product);
-          Navigator.pop(context);
-        },
-      );
+
+      if(context.mounted){
+        httpErrorHandling(
+          response: res,
+          context: context,
+          onSuccess: () {
+            showSnackBar(context, 'Product added successfully');
+            context.read<ProductProvider>().addProduct(product);
+            Navigator.pop(context);
+          },
+        );
+      }
+
     } catch (e) {
-      showSnackBar(context, e.toString());
+      if(context.mounted) showSnackBar(context, e.toString());
     }
   }
 
@@ -69,21 +73,24 @@ class AdminServices {
         headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8', 'x-auth-token': userProvider.user.token},
       );
 
-      httpErrorHandling(
-        response: res,
-        context: context,
-        onSuccess: () {
-          for (int i = 0; i < jsonDecode(res.body).length; i++) {
-            context.read<ProductProvider>().addProduct(
-              Product.fromJson(
-                jsonDecode(res.body)[i],
-              ),
-            );
-          }
-        },
-      );
+      if(context.mounted){
+        httpErrorHandling(
+          response: res,
+          context: context,
+          onSuccess: () {
+            context.read<ProductProvider>().resetProductList();
+            for (int i = 0; i < jsonDecode(res.body).length; i++) {
+              context.read<ProductProvider>().addProduct(
+                Product.fromJson(
+                  jsonDecode(res.body)[i],
+                ),
+              );
+            }
+          },
+        );
+      }
     } catch (e) {
-      showSnackBar(context, e.toString());
+      if(context.mounted) showSnackBar(context, e.toString());
     }
   }
 
@@ -102,16 +109,18 @@ class AdminServices {
           },
           body: jsonEncode({'id': product.id,})
       );
+      if(context.mounted){
+        httpErrorHandling(
+          response: res,
+          context: context,
+          onSuccess: () {
+            onSuccess();
+          },
+        );
+      }
 
-      httpErrorHandling(
-        response: res,
-        context: context,
-        onSuccess: () {
-          onSuccess();
-        },
-      );
     } catch (e) {
-      showSnackBar(context, e.toString());
+      if(context.mounted) showSnackBar(context, e.toString());
     }
   }
 }

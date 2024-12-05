@@ -1,10 +1,10 @@
 const express = require("express");
 const productRouter = express.Router();
 const auth_middleware = require("../middlewares/auth_middleware");
-const {Product} = require("../models/product");
+const Product = require("../models/product");
 
 
-productRouter.get("/api/products/", auth_middleware, async (req, res) => {
+productRouter.get("/api/products", auth_middleware, async (req, res) => {
     try {
         const products = await Product.find({category : req.query.category});
         res.json(products);
@@ -22,3 +22,5 @@ productRouter.get("/api/products/search/:name", auth_middleware, async (req, res
         res.status(500).json({error : e.message});
     }
 });
+
+module.exports = productRouter

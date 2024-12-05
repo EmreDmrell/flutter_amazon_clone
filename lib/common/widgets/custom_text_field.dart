@@ -8,13 +8,13 @@ class CustomTextField extends StatelessWidget {
   final Icon? icon;
 
   const CustomTextField({
-    Key? key,
+    super.key,
     required this.controller,
     required this.hintText,
     required this.keyboardType,
     this.maxLines = 1,
     this.icon,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class CustomTextField extends StatelessWidget {
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Colors.black38),
         ),
-        prefixIcon: icon ?? null,
+        prefixIcon: icon,
       ),
       validator: (val) {
         if (val == null || val.isEmpty) {

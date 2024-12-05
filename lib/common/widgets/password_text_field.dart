@@ -7,12 +7,12 @@ class PasswordTextField extends StatefulWidget {
   final TextInputType keyboardType;
 
   const PasswordTextField({
-    Key? key,
+    super.key,
     required this.controller,
     required this.hintText,
     required this.keyboardType,
     this.maxLines = 1,
-  }) : super(key: key);
+  });
 
   @override
   State<PasswordTextField> createState() => _PasswordTextFieldState();
@@ -44,7 +44,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Colors.black38),
         ),
-        prefixIcon: Icon(Icons.lock_rounded, size: 24),
+        prefixIcon: const Icon(Icons.lock_rounded, size: 24),
         suffixIcon: Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
           child: GestureDetector(

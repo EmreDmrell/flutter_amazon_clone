@@ -28,16 +28,18 @@ class AuthService {
         body: jsonEncode(user.toJson()),
         headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'},
       );
+      if(context.mounted){
+        httpErrorHandling(
+          response: response,
+          context: context,
+          onSuccess: () {
+            showSnackBar(context, "Account created! You can now sign in with same credentials");
+          },
+        );
+      }
 
-      httpErrorHandling(
-        response: response,
-        context: context,
-        onSuccess: () {
-          showSnackBar(context, "Account created! You can now sign in with same credentials");
-        },
-      );
     } catch (e) {
-      showSnackBar(context, e.toString());
+      if(context.mounted) showSnackBar(context, e.toString());
     }
   }
 
@@ -56,19 +58,23 @@ class AuthService {
         headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'},
       );
 
-      httpErrorHandling(
-        response: response,
-        context: context,
-        onSuccess: () async {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          Provider.of<UserProvider>(context, listen: false).setUser(response.body);
-          await prefs.setString('x-auth-token', jsonDecode(response.body)['token']);
-          
-          Navigator.pushNamedAndRemoveUntil(context, BottomBar.routeName, (route) => false);
-        },
-      );
+      if(context.mounted){
+        httpErrorHandling(
+          response: response,
+          context: context,
+          onSuccess: () async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setString('x-auth-token', jsonDecode(response.body)['token']);
+            if(context.mounted){
+              Provider.of<UserProvider>(context, listen: false).setUser(response.body);
+              Navigator.pushNamedAndRemoveUntil(context, BottomBar.routeName, (route) => false);
+            }
+          },
+        );
+      }
+
     } catch (e) {
-      showSnackBar(context, e.toString());
+      if(context.mounted) showSnackBar(context, e.toString());
     }
   }
 
@@ -101,12 +107,13 @@ class AuthService {
             'x-auth-token': token
           },
         );
-
-        var userProvider = Provider.of<UserProvider>(context, listen: false);
-        userProvider.setUser(userRes.body);
+        if(context.mounted){
+          var userProvider = Provider.of<UserProvider>(context, listen: false);
+          userProvider.setUser(userRes.body);
+        }
       }
     } catch (e) {
-      showSnackBar(context, e.toString());
+      if(context.mounted) showSnackBar(context, e.toString());
     }
   }
 }
