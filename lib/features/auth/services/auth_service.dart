@@ -29,7 +29,7 @@ class AuthService {
         headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'},
       );
       if(context.mounted){
-        httpErrorHandling(
+        httpErrorHandle(
           response: response,
           context: context,
           onSuccess: () {
@@ -59,7 +59,7 @@ class AuthService {
       );
 
       if(context.mounted){
-        httpErrorHandling(
+        httpErrorHandle(
           response: response,
           context: context,
           onSuccess: () async {

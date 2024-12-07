@@ -17,7 +17,8 @@ productRouter.get("/api/products", auth_middleware, async (req, res) => {
 // /api/products/search/i
 productRouter.get("/api/products/search/:name", auth_middleware, async (req, res) => {
     try {
-        const product = await Product.find({name : { $regex: req.params.name, $option : "i"},});
+        const products = await Product.find({name : { $regex: req.params.name, $options : "i"},});
+        res.json(products)
     } catch (e) {
         res.status(500).json({error : e.message});
     }

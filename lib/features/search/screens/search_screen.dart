@@ -1,29 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_amazon_clone/features/home/widgets/carousel_image.dart';
-import 'package:flutter_amazon_clone/features/home/widgets/deal_of_day.dart';
-import 'package:flutter_amazon_clone/features/home/widgets/top_categories.dart';
-import 'package:flutter_amazon_clone/features/search/screens/search_screen.dart';
+import 'package:flutter_amazon_clone/features/home/screens/widgets/searched_product.dart';
+import 'package:flutter_amazon_clone/features/home/widgets/address_box.dart';
+import 'package:flutter_amazon_clone/features/search/services/search_services.dart';
+import 'package:flutter_amazon_clone/providers/product_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../../constants/global_variables.dart';
-import '../widgets/address_box.dart';
 
-class HomeScreen extends StatefulWidget {
-  static const String routeName = "/home";
+class SearchScreen extends StatefulWidget {
+  static const String routeName = '/search-screen';
+  final String searchQuery;
 
-  const HomeScreen({super.key});
+  const SearchScreen({super.key, required this.searchQuery});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<SearchScreen> createState() => _SearchScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _SearchScreenState extends State<SearchScreen> {
+  SearchServices searchServices = SearchServices();
+
+  void navigateToSearchScreen(String query) {
+    Navigator.pushNamed(context, SearchScreen.routeName, arguments: query);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    searchServices.fetchSearchedProducts(
+        context: context, searchQuery: widget.searchQuery);
+  }
 
   @override
   Widget build(BuildContext context) {
-    void navigateToSearchScreen(String query) {
-      Navigator.pushNamed(context, SearchScreen.routeName, arguments: query);
-    }
-
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(60),
@@ -44,15 +53,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(7),
                     elevation: 1,
                     child: TextFormField(
-                      onTapOutside: (event) {FocusManager.instance.primaryFocus?.unfocus();},
+                      onTapOutside: (event) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                      },
                       //I don't understand how it passes the query
                       onFieldSubmitted: navigateToSearchScreen,
                       decoration: InputDecoration(
                         prefixIcon: InkWell(
                           onTap: () => {},
                           child: const Padding(
-                            padding:  EdgeInsets.only(left: 6),
-                            child:  Icon(
+                            padding: EdgeInsets.only(left: 6),
+                            child: Icon(
                               Icons.search,
                               color: Colors.black,
                               size: 23,
@@ -96,21 +107,21 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           )),
-      body: const SingleChildScrollView(
-        child: Column(
-          children: [
-            AddressBox(),
-            SizedBox(
-              height: 10,
+      body: Column(
+        children: [
+          const AddressBox(),
+          const SizedBox(
+            height: 10,
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: context.watch<ProductProvider>().productList.length,
+              itemBuilder: (context, index) {
+                return SearchedProduct(product: context.watch<ProductProvider>().productList[index]);
+              },
             ),
-            TopCategories(),
-            SizedBox(
-              height: 10,
-            ),
-            CarouselImage(),
-            DealOfDay(),
-          ],
-        ),
+          )
+        ],
       ),
     );
   }

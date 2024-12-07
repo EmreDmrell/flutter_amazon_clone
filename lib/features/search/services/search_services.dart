@@ -1,25 +1,24 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_amazon_clone/models/product/product.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-
 import '../../../constants/config.dart';
 import '../../../constants/errorHandling.dart';
 import '../../../constants/utils.dart';
+import '../../../models/product/product.dart';
 import '../../../providers/product_provider.dart';
 import '../../../providers/user_provider.dart';
 
-class HomeServices {
-  Future<void> fetchCategoryProducts({
+class SearchServices {
+  Future<void> fetchSearchedProducts({
     required BuildContext context,
-    required String category,
+    required String searchQuery,
   }) async{
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     try {
       http.Response res = await http.get(
-        Uri.parse('$homeIpAddress/api/products?category=$category'),
+        Uri.parse('$homeIpAddress/api/products/search/$searchQuery'),
         headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8', 'x-auth-token': userProvider.user.token},
       );
 

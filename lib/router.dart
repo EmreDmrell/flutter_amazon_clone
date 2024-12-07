@@ -5,6 +5,7 @@ import 'package:flutter_amazon_clone/features/home/screens/home_screen.dart';
 import 'common/widgets/bottom_bar.dart';
 import 'features/admin/screens/add_product_screen.dart';
 import 'features/admin/screens/admin_screen.dart';
+import 'features/search/screens/search_screen.dart';
 
 Route<dynamic> generateRoute(RouteSettings routeSettings) {
   switch (routeSettings.name) {
@@ -12,12 +13,6 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
       return MaterialPageRoute(
         settings: routeSettings,
         builder: (_) => const AuthScreen(),
-      );
-    case CategoryDealScreen.routeName:
-      var category = routeSettings.arguments as String;
-      return MaterialPageRoute(
-        settings: routeSettings,
-        builder: (_) =>  CategoryDealScreen(category: category),
       );
     case AdminScreen.routeName:
       return MaterialPageRoute(
@@ -38,6 +33,18 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
       return MaterialPageRoute(
         settings: routeSettings,
         builder: (_) => const BottomBar(),
+      );
+    case CategoryDealScreen.routeName:
+      var category = routeSettings.arguments as String;
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (_) => CategoryDealScreen(category: category),
+      );
+    case SearchScreen.routeName:
+      var searchQuery = routeSettings.arguments as String;
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (_) => SearchScreen(searchQuery: searchQuery,),
       );
     //We can do an Error Page at the end for default
     default:

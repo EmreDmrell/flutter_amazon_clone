@@ -48,7 +48,7 @@ class AdminServices {
       );
 
       if(context.mounted){
-        httpErrorHandling(
+        httpErrorHandle(
           response: res,
           context: context,
           onSuccess: () {
@@ -66,7 +66,6 @@ class AdminServices {
 
   Future<void> fetchAllProducts(BuildContext context) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    context.read<ProductProvider>().resetProductList();
     try {
       http.Response res = await http.get(
         Uri.parse('$homeIpAddress/admin/get-products'),
@@ -74,7 +73,7 @@ class AdminServices {
       );
 
       if(context.mounted){
-        httpErrorHandling(
+        httpErrorHandle(
           response: res,
           context: context,
           onSuccess: () {
@@ -110,7 +109,7 @@ class AdminServices {
           body: jsonEncode({'id': product.id,})
       );
       if(context.mounted){
-        httpErrorHandling(
+        httpErrorHandle(
           response: res,
           context: context,
           onSuccess: () {
