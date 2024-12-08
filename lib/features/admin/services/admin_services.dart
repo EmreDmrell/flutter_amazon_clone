@@ -66,6 +66,7 @@ class AdminServices {
 
   Future<void> fetchAllProducts(BuildContext context) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+    context.read<ProductProvider>().resetProductList();
     try {
       http.Response res = await http.get(
         Uri.parse('$homeIpAddress/admin/get-products'),
@@ -77,7 +78,6 @@ class AdminServices {
           response: res,
           context: context,
           onSuccess: () {
-            context.read<ProductProvider>().resetProductList();
             for (int i = 0; i < jsonDecode(res.body).length; i++) {
               context.read<ProductProvider>().addProduct(
                 Product.fromJson(

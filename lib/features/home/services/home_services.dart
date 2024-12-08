@@ -17,6 +17,7 @@ class HomeServices {
     required String category,
   }) async{
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+    context.read<ProductProvider>().resetProductList();
     try {
       http.Response res = await http.get(
         Uri.parse('$homeIpAddress/api/products?category=$category'),
@@ -28,7 +29,6 @@ class HomeServices {
           response: res,
           context: context,
           onSuccess: () {
-            context.read<ProductProvider>().resetProductList();
             for (int i = 0; i < jsonDecode(res.body).length; i++) {
               context.read<ProductProvider>().addProduct(
                 Product.fromJson(

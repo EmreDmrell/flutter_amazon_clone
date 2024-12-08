@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_amazon_clone/features/auth/screens/auth_screen.dart';
 import 'package:flutter_amazon_clone/features/home/screens/category_deal_screen.dart';
 import 'package:flutter_amazon_clone/features/home/screens/home_screen.dart';
+import 'package:flutter_amazon_clone/features/product_details/screens/product_details_screen.dart';
 import 'common/widgets/bottom_bar.dart';
 import 'features/admin/screens/add_product_screen.dart';
 import 'features/admin/screens/admin_screen.dart';
 import 'features/search/screens/search_screen.dart';
+import 'models/product/product.dart';
 
 Route<dynamic> generateRoute(RouteSettings routeSettings) {
   switch (routeSettings.name) {
@@ -45,6 +47,12 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
       return MaterialPageRoute(
         settings: routeSettings,
         builder: (_) => SearchScreen(searchQuery: searchQuery,),
+      );
+    case ProductDetailsScreen.routeName:
+      var product = routeSettings.arguments as Product;
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (_) => ProductDetailsScreen(product: product),
       );
     //We can do an Error Page at the end for default
     default:
