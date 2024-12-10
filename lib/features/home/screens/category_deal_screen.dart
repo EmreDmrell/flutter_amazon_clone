@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../constants/global_variables.dart';
 import '../../../models/product/product.dart';
 import '../../../providers/product_provider.dart';
+import '../../product_details/screens/product_details_screen.dart';
 import '../services/home_services.dart';
 
 class CategoryDealScreen extends StatefulWidget {
@@ -33,6 +34,9 @@ class _CategoryDealScreenState extends State<CategoryDealScreen> {
 
   @override
   Widget build(BuildContext context) {
+    void navigateToSearchScreen(Product product) {
+      Navigator.pushNamed(context, ProductDetailsScreen.routeName, arguments: product);
+    }
     List<Product> productList = context.watch<ProductProvider>().productList;
     return Scaffold(
       appBar: PreferredSize(
@@ -75,23 +79,26 @@ class _CategoryDealScreenState extends State<CategoryDealScreen> {
                 mainAxisSpacing: 10,
               ),
               itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    SingleProduct(imageSrc: productList[index].images[0]),
-                    Container(
-                      alignment: Alignment.topLeft,
-                      padding: const EdgeInsets.only(
-                        left: 0,
-                        top: 5,
-                        right: 15,
+                return GestureDetector(
+                  onTap: () => navigateToSearchScreen(productList[index]),
+                  child: Column(
+                    children: [
+                      SingleProduct(imageSrc: productList[index].images[0]),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        padding: const EdgeInsets.only(
+                          left: 0,
+                          top: 5,
+                          right: 15,
+                        ),
+                        child:Text(
+                          productList[index].name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                      child:Text(
-                        productList[index].name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 );
               },
             ),

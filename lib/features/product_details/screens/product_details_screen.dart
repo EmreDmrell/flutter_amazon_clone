@@ -2,10 +2,13 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_amazon_clone/common/widgets/custom_button.dart';
 import 'package:flutter_amazon_clone/common/widgets/stars.dart';
+import 'package:flutter_amazon_clone/features/product_details/services/product_details_services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
 
 import '../../../constants/global_variables.dart';
 import '../../../models/product/product.dart';
+import '../../../providers/user_provider.dart';
 import '../../search/screens/search_screen.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
@@ -19,6 +22,28 @@ class ProductDetailsScreen extends StatefulWidget {
 }
 
 class _ProductDetailScreenState extends State<ProductDetailsScreen> {
+  final ProductDetailServices productDetailServices = ProductDetailServices();
+
+  double avgRating = 0;
+  double myRating = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    double totalRating = 0;
+    for (int i = 0; i < widget.product.ratings!.length; i++) {
+      totalRating += widget.product.ratings![i].rating;
+      if (widget.product.ratings![i].userId ==
+          Provider.of<UserProvider>(context, listen: false).user.id) {
+        myRating = widget.product.ratings![i].rating;
+      }
+    }
+
+    if (totalRating != 0) {
+      avgRating = totalRating / widget.product.ratings!.length;
+    }
+  }
+
   void navigateToSearchScreen(String query) {
     Navigator.pushNamed(context, SearchScreen.routeName, arguments: query);
   }
@@ -111,7 +136,7 @@ class _ProductDetailScreenState extends State<ProductDetailsScreen> {
                 Text(
                   widget.product.id.toString(),
                 ),
-                const Stars(rating: 3)
+                Stars(rating: avgRating),
               ],
             ),
             Padding(
@@ -198,17 +223,23 @@ class _ProductDetailScreenState extends State<ProductDetailsScreen> {
               ),
             ),
             RatingBar.builder(
-              initialRating: 0,
+              initialRating: myRating,
               minRating: 1,
               direction: Axis.horizontal,
               allowHalfRating: true,
               itemCount: 5,
               itemPadding: const EdgeInsets.symmetric(horizontal: 4),
               itemBuilder: (context, _) => const Icon(
-                  Icons.star,
-                  color: GlobalVariables.secondaryColor,
+                Icons.star,
+                color: GlobalVariables.secondaryColor,
               ),
-              onRatingUpdate: (rating) {},
+              onRatingUpdate: (rating) {
+                productDetailServices.rateProduct(
+                  context: context,
+                  product: widget.product,
+                  rating: rating,
+                );
+              },
             )
           ],
         ),

@@ -11,9 +11,18 @@ class SearchedProduct extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double totalRating = 0;
+    double avgRating = 0;
+
+    for (int i = 0; i < product.ratings!.length; i++) {
+      totalRating += product.ratings![i].rating;
+    }
+
+    avgRating = totalRating / product.ratings!.length;
 
     void navigateToSearchScreen() {
-      Navigator.pushNamed(context, ProductDetailsScreen.routeName, arguments: product);
+      Navigator.pushNamed(context, ProductDetailsScreen.routeName,
+          arguments: product);
     }
 
     return Container(
@@ -47,8 +56,8 @@ class SearchedProduct extends StatelessWidget {
               Container(
                 width: 235,
                 padding: const EdgeInsets.only(left: 10, top: 5),
-                child: const Stars(
-                  rating: 3,
+                child: Stars(
+                  rating: avgRating,
                 ),
               ),
               Container(
@@ -66,7 +75,7 @@ class SearchedProduct extends StatelessWidget {
               ),
               Container(
                 width: 235,
-                padding: const EdgeInsets.only(left: 10,),
+                padding: const EdgeInsets.only(left: 10),
                 child: const Text(
                   'Eligible for FREE Shipping',
                   overflow: TextOverflow.ellipsis,
@@ -79,13 +88,10 @@ class SearchedProduct extends StatelessWidget {
               Container(
                 width: 235,
                 padding: const EdgeInsets.only(left: 10, top: 5),
-                child: const  Text(
+                child: const Text(
                   'In Stock',
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.teal
-                  ),
+                  style: TextStyle(fontSize: 16, color: Colors.teal),
                   maxLines: 1,
                 ),
               ),
