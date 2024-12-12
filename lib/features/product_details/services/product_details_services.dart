@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_amazon_clone/constants/config.dart';
 import 'package:flutter_amazon_clone/constants/utils.dart';
+import 'package:flutter_amazon_clone/providers/product_provider.dart';
 import 'package:flutter_amazon_clone/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -32,7 +33,9 @@ class ProductDetailServices {
         httpErrorHandle(
           response: res,
           context: context,
-          onSuccess: () {},
+          onSuccess: () {
+            context.read<ProductProvider>().rateProduct(product, rating, userProvider.user.id);
+          },
         );
       }
     }catch(e){
