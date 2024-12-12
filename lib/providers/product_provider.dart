@@ -4,8 +4,11 @@ import '../models/rating/rating.dart';
 
 class ProductProvider extends ChangeNotifier {
   final List<Product> _productList = [];
+  Product? _dealOfDay = Product(name: '', description: '', price: 0, quantity: 0, category: '', images: []);
+
 
   List<Product> get productList => _productList;
+  Product get dealOfDay => _dealOfDay!;
 
   void resetProductList(){
     _productList.clear();
