@@ -21,25 +21,36 @@ class AuthService {
     required String name,
   }) async {
     try {
-      User user = User('', name, email, password, '', '', '', );
+      User user = User(
+        id: '',
+        name: name,
+        email: email,
+        password: password,
+        address: '',
+        type: '',
+        token: '',
+        cart: [],
+      );
 
       http.Response response = await http.post(
         Uri.parse('$homeIpAddress/api/signup'),
         body: jsonEncode(user.toJson()),
-        headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'},
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
       );
-      if(context.mounted){
+      if (context.mounted) {
         httpErrorHandle(
           response: response,
           context: context,
           onSuccess: () {
-            showSnackBar(context, "Account created! You can now sign in with same credentials");
+            showSnackBar(context,
+                "Account created! You can now sign in with same credentials");
           },
         );
       }
-
     } catch (e) {
-      if(context.mounted) showSnackBar(context, e.toString());
+      if (context.mounted) showSnackBar(context, e.toString());
     }
   }
 
@@ -55,26 +66,30 @@ class AuthService {
           "email": email,
           "password": password,
         }),
-        headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'},
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
       );
 
-      if(context.mounted){
+      if (context.mounted) {
         httpErrorHandle(
           response: response,
           context: context,
           onSuccess: () async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.setString('x-auth-token', jsonDecode(response.body)['token']);
-            if(context.mounted){
-              Provider.of<UserProvider>(context, listen: false).setUser(response.body);
-              Navigator.pushNamedAndRemoveUntil(context, BottomBar.routeName, (route) => false);
+            await prefs.setString(
+                'x-auth-token', jsonDecode(response.body)['token']);
+            if (context.mounted) {
+              Provider.of<UserProvider>(context, listen: false)
+                  .setUser(response.body);
+              Navigator.pushNamedAndRemoveUntil(
+                  context, BottomBar.routeName, (route) => false);
             }
           },
         );
       }
-
     } catch (e) {
-      if(context.mounted) showSnackBar(context, e.toString());
+      if (context.mounted) showSnackBar(context, e.toString());
     }
   }
 
@@ -89,17 +104,15 @@ class AuthService {
         prefs.setString("x-auth-token", "");
       }
 
-      var tokenRes = await http.post(
-        Uri.parse('$homeIpAddress/tokenIsValid'),
-        headers: <String, String > {
-          'Content-Type': 'application/json; charset=UTF-8',
-          'x-auth-token': token!
-        }
-      );
+      var tokenRes = await http.post(Uri.parse('$homeIpAddress/tokenIsValid'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'x-auth-token': token!
+          });
 
       var response = jsonDecode(tokenRes.body);
 
-      if(response) {
+      if (response) {
         http.Response userRes = await http.get(
           Uri.parse('$homeIpAddress/'),
           headers: <String, String>{
@@ -107,13 +120,13 @@ class AuthService {
             'x-auth-token': token
           },
         );
-        if(context.mounted){
+        if (context.mounted) {
           var userProvider = Provider.of<UserProvider>(context, listen: false);
           userProvider.setUser(userRes.body);
         }
       }
     } catch (e) {
-      if(context.mounted) showSnackBar(context, e.toString());
+      if (context.mounted) showSnackBar(context, e.toString());
     }
   }
 }

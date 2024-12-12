@@ -3,6 +3,9 @@ import 'package:flutter_amazon_clone/constants/global_variables.dart';
 import 'package:flutter_amazon_clone/features/account/screens/account_screen.dart';
 import 'package:flutter_amazon_clone/features/home/screens/home_screen.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:provider/provider.dart';
+
+import '../../providers/user_provider.dart';
 
 class BottomBar extends StatefulWidget {
   static const String routeName = '/actual-home';
@@ -36,7 +39,7 @@ class _BottomBarState extends State<BottomBar> {
 
   @override
   Widget build(BuildContext context) {
-    //final userCartLen = context.watch<UserProvider>().user.cart.length;
+    final userCartLen = context.watch<UserProvider>().user.cart.length;
     return Scaffold(
       body: pages[_page],
       bottomNavigationBar: BottomNavigationBar(
@@ -49,13 +52,13 @@ class _BottomBarState extends State<BottomBar> {
         items: [
           buildBottomNavigationBarItem(const Icon(Icons.home_outlined), 0),
           buildBottomNavigationBarItem(const Icon(Icons.person_outline_outlined), 1),
-          buildBottomNavigationBarItem(const Icon(Icons.shopping_cart_outlined), 2, badge: true),
+          buildBottomNavigationBarItem(const Icon(Icons.shopping_cart_outlined), 2, badge: true, cartLen: userCartLen),
         ],
       ),
     );
   }
 
-  BottomNavigationBarItem buildBottomNavigationBarItem(Icon icon, int page, {bool badge = false, int cartLen = 4}) {
+  BottomNavigationBarItem buildBottomNavigationBarItem(Icon icon, int page, {bool badge = false, int cartLen = 15}) {
     return BottomNavigationBarItem(
       icon: Container(
         width: bottomBarWidth,

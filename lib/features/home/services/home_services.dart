@@ -15,32 +15,67 @@ class HomeServices {
   Future<void> fetchCategoryProducts({
     required BuildContext context,
     required String category,
-  }) async{
+  }) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     context.read<ProductProvider>().resetProductList();
     try {
       http.Response res = await http.get(
         Uri.parse('$homeIpAddress/api/products?category=$category'),
-        headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8', 'x-auth-token': userProvider.user.token},
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': userProvider.user.token
+        },
       );
 
-      if(context.mounted){
+      if (context.mounted) {
         httpErrorHandle(
           response: res,
           context: context,
           onSuccess: () {
             for (int i = 0; i < jsonDecode(res.body).length; i++) {
               context.read<ProductProvider>().addProduct(
-                Product.fromJson(
-                  jsonDecode(res.body)[i],
-                ),
-              );
+                    Product.fromJson(
+                      jsonDecode(res.body)[i],
+                    ),
+                  );
             }
           },
         );
       }
     } catch (e) {
-      if(context.mounted) showSnackBar(context, e.toString());
+      if (context.mounted) showSnackBar(context, e.toString());
+    }
+  }
+
+  Future<void> fetchDealOfDay({
+    required BuildContext context,
+  }) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    context.read<ProductProvider>().resetProductList();
+    try {
+      http.Response res = await http.get(
+        Uri.parse('$homeIpAddress/api/deal-of-day'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': userProvider.user.token
+        },
+      );
+
+      if (context.mounted) {
+        httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () {
+            context.read<ProductProvider>().changeDealOfDay(
+                  Product.fromJson(
+                    jsonDecode(res.body),
+                  ),
+                );
+          },
+        );
+      }
+    } catch (e) {
+      if (context.mounted) showSnackBar(context, e.toString());
     }
   }
 }

@@ -34,7 +34,7 @@ class _CategoryDealScreenState extends State<CategoryDealScreen> {
 
   @override
   Widget build(BuildContext context) {
-    void navigateToSearchScreen(Product product) {
+    void navigateToProductDetailsScreen(Product product) {
       Navigator.pushNamed(context, ProductDetailsScreen.routeName, arguments: product);
     }
     List<Product> productList = context.watch<ProductProvider>().productList;
@@ -80,7 +80,7 @@ class _CategoryDealScreenState extends State<CategoryDealScreen> {
               ),
               itemBuilder: (context, index) {
                 return GestureDetector(
-                  onTap: () => navigateToSearchScreen(productList[index]),
+                  onTap: () => navigateToProductDetailsScreen(productList[index]),
                   child: Column(
                     children: [
                       SingleProduct(imageSrc: productList[index].images[0]),

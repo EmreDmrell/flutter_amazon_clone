@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_amazon_clone/features/home/services/home_services.dart';
 import 'package:flutter_amazon_clone/features/home/widgets/carousel_image.dart';
 import 'package:flutter_amazon_clone/features/home/widgets/deal_of_day.dart';
 import 'package:flutter_amazon_clone/features/home/widgets/top_categories.dart';
@@ -20,6 +21,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    HomeServices homeServices = HomeServices();
+
+    Future<void> refresh() async{
+
+      Future.delayed(const Duration(seconds: 2), () {
+        if(context.mounted){
+          homeServices.fetchDealOfDay(context: context);
+        }
+      });
+
+    }
     void navigateToSearchScreen(String query) {
       Navigator.pushNamed(context, SearchScreen.routeName, arguments: query);
     }
@@ -96,20 +109,23 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           )),
-      body: const SingleChildScrollView(
-        child: Column(
-          children: [
-            AddressBox(),
-            SizedBox(
-              height: 10,
-            ),
-            TopCategories(),
-            SizedBox(
-              height: 10,
-            ),
-            CarouselImage(),
-            DealOfDay(),
-          ],
+      body: RefreshIndicator(
+        onRefresh: refresh,
+        child: const SingleChildScrollView(
+          child: Column(
+            children: [
+              AddressBox(),
+              SizedBox(
+                height: 10,
+              ),
+              TopCategories(),
+              SizedBox(
+                height: 10,
+              ),
+              CarouselImage(),
+              DealOfDay(),
+            ],
+          ),
         ),
       ),
     );
