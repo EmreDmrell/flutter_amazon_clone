@@ -4,6 +4,7 @@ import 'package:flutter_amazon_clone/features/product_details/services/product_d
 import 'package:flutter_amazon_clone/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/cart/cart.dart';
 import '../../../models/product/product.dart';
 import '../../product_details/screens/product_details_screen.dart';
 
@@ -29,9 +30,9 @@ class _CartProductState extends State<CartProduct> {
 
   @override
   Widget build(BuildContext context) {
-    final productCart = context.watch<UserProvider>().user.cart[widget.index];
-    final product = Product.fromJson(productCart['product']);
-    final quantity = productCart['quantity'];
+    final Cart productCart = context.watch<UserProvider>().user.cart[widget.index];
+    final product = productCart.product;
+    final quantity = productCart.quantity;
 
     void navigateToSearchScreen() {
       Navigator.pushNamed(context, ProductDetailsScreen.routeName,

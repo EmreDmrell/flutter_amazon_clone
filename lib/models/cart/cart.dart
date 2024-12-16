@@ -6,7 +6,7 @@ part 'cart.g.dart';
 
 @JsonSerializable()
 class Cart {
-  final List<Product> product;
+  final Product product;
   final int quantity;
 
   //rating

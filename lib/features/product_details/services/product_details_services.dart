@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import '../../../constants/errorHandling.dart';
 import '../../../models/User/user.dart';
+import '../../../models/cart/cart.dart';
 import '../../../models/product/product.dart';
 
 class ProductDetailServices {
@@ -34,7 +35,9 @@ class ProductDetailServices {
           context: context,
           onSuccess: () {
             User user = userProvider.user.copyWith(
-              cart : jsonDecode(res.body)['cart']
+              cart : (jsonDecode(res.body)['cart'] as List<dynamic>).map(
+                  (e) => Cart.fromJson(e as Map<String, dynamic>)
+              ).toList()
             );
             userProvider.setUserFromModel(user);
             showSnackBar(context, 'Product has been added to the cart');

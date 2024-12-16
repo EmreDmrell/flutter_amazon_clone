@@ -9,7 +9,7 @@ class CartSubtotal extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.watch<UserProvider>().user;
     int sum = 0;
-    user.cart.map((e) => sum += e['quantity'] * e['product']['price'] as int).toList();
+    user.cart.map((e) => sum += e.quantity * e.product.price as int).toList();
     return Container(
       margin: const EdgeInsets.all(8.0),
       child: Row(

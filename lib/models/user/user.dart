@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import '../cart/cart.dart';
+
 
 part 'user.g.dart';
 
@@ -12,7 +14,7 @@ class User{
   final String address;
   final String type;
   final String token;
-  final List<dynamic> cart;
+  final List<Cart> cart;
 
   User({required this.id, required this.name, required this.email, required this.password, required this.address, required this.type, required this.token, required this.cart});
 
@@ -28,7 +30,7 @@ class User{
     String? address,
     String? type,
     String? token,
-    List<dynamic>? cart,
+    List<Cart>? cart,
   }) {
     return User(
       id: id ?? this.id,
