@@ -58,7 +58,7 @@ class _BottomBarState extends State<BottomBar> {
     );
   }
 
-  BottomNavigationBarItem buildBottomNavigationBarItem(Icon icon, int page, {bool badge = false, int cartLen = 15}) {
+  BottomNavigationBarItem buildBottomNavigationBarItem(Icon icon, int page, {bool badge = false, int? cartLen = 15}) {
     return BottomNavigationBarItem(
       icon: Container(
         width: bottomBarWidth,
