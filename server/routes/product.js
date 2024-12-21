@@ -1,84 +1,85 @@
 const express = require("express");
+const { check, validationResult } = require('express-validator');
 const productRouter = express.Router();
 const auth_middleware = require("../middlewares/auth_middleware");
-const {Product}  = require("../models/product");
+const { Product } = require("../models/product");
+const asyncHandler = require('../utils/async_handler');
 
-
-productRouter.get("/api/products", auth_middleware, async (req, res) => {
-    try {
-        const products = await Product.find({category : req.query.category});
-        res.json(products);
-    } catch (e) {
-        res.status(500).json({error : e.message});
+// Get products by category
+productRouter.get("/api/products", auth_middleware, [
+    check('category', 'Category is required').not().isEmpty()
+], asyncHandler(async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
     }
-});
 
-// get request to search products and get them
-// /api/products/search/i
-productRouter.get("/api/products/search/:name", auth_middleware, async (req, res) => {
-    try {
-        const products = await Product.find({name : { $regex: req.params.name, $options : "i"},});
-        res.json(products)
-    } catch (e) {
-        res.status(500).json({error : e.message});
+    const products = await Product.find({ category: req.query.category });
+    res.json(products);
+}));
+
+// Search products by name
+productRouter.get("/api/products/search/:name", auth_middleware, [
+    check('name', 'Name is required').not().isEmpty()
+], asyncHandler(async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
     }
-});
 
-// post request route to rate the product.
+    const products = await Product.find({ name: { $regex: req.params.name, $options: "i" } });
+    res.json(products);
+}));
 
-productRouter.post("/api/rate-product", auth_middleware, async (req, res) => {
-    try {
-        const { id, rating } = req.body;
+// Post request to rate the product
+productRouter.post("/api/rate-product", auth_middleware, [
+    check('id', 'Product ID is required').not().isEmpty(),
+    check('rating', 'Rating is required').isInt({ min: 1, max: 5 })
+], asyncHandler(async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
 
-        let product = await Product.findById(id);
+    const { id, rating } = req.body;
+    let product = await Product.findById(id);
 
-        for (let i = 0; i < product.ratings.length; i++){
-            if(product.ratings[i].userId == req.user){
-                product.ratings.splice(i, 1);
-            }
+    for (let i = 0; i < product.ratings.length; i++) {
+        if (product.ratings[i].userId == req.user) {
+            product.ratings.splice(i, 1);
         }
-
-        const ratingSchema = {
-            userId: req.user,
-            rating,
-        }
-
-        product.ratings.push(ratingSchema);
-        product = await product.save();
-        res.json(product); 
-        
-    } catch (e) {
-        res.status(500).json({error : e.message})
     }
-});
 
-//get request for deal-of-day
+    const ratingSchema = {
+        userId: req.user,
+        rating,
+    };
 
-productRouter.get("/api/deal-of-day", auth_middleware, async (req, res) => {
-    try {
-        let products = await Product.find({});
+    product.ratings.push(ratingSchema);
+    product = await product.save();
+    res.json(product);
+}));
 
-        products = products.sort((a, b) => {
-            let aSum = 0;
-            let bSum = 0;
+// Get request for deal-of-day
+productRouter.get("/api/deal-of-day", auth_middleware, asyncHandler(async (req, res) => {
+    let products = await Product.find({});
 
-            a.ratings.forEach((e) =>{
-                aSum += e.rating;
-            });
+    products = products.sort((a, b) => {
+        let aSum = 0;
+        let bSum = 0;
 
-            b.ratings.forEach((e) =>{
-                bSum += e.rating;
-            });
-
-            return aSum < bSum ? 1 : -1;
+        a.ratings.forEach((e) => {
+            aSum += e.rating;
         });
 
-        res.json(products[0]);
-        
+        b.ratings.forEach((e) => {
+            bSum += e.rating;
+        });
 
-    } catch (e) {
-        res.status(500).json({message : e.message})
-    }
-});
+        return bSum - aSum;
+    });
 
-module.exports = productRouter
+    res.json(products[0]);
+}));
+
+module.exports = productRouter;

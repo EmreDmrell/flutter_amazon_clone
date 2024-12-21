@@ -70,8 +70,7 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(7),
-                          borderSide:
-                              const BorderSide(color: Colors.black38, width: 1),
+                          borderSide: const BorderSide(color: Colors.black38, width: 1),
                         ),
                         hintText: 'Type for searching',
                         hintStyle: const TextStyle(

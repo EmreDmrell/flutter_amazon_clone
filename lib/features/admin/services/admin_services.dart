@@ -101,12 +101,11 @@ class AdminServices {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     try {
       http.Response res = await http.delete(
-          Uri.parse('$homeIpAddress/admin/delete-product'),
+          Uri.parse('$homeIpAddress/admin/delete-product/${product.id}'),
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
             'x-auth-token': userProvider.user.token,
           },
-          body: jsonEncode({'id': product.id,})
       );
       if(context.mounted){
         httpErrorHandle(
