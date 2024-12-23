@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_amazon_clone/features/address/screen/address_screen.dart';
 import 'package:flutter_amazon_clone/features/auth/screens/auth_screen.dart';
 import 'package:flutter_amazon_clone/features/home/screens/category_deal_screen.dart';
 import 'package:flutter_amazon_clone/features/home/screens/home_screen.dart';
@@ -29,7 +30,7 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
     case HomeScreen.routeName:
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (_) => HomeScreen(),
+        builder: (_) => const HomeScreen(),
       );
     case BottomBar.routeName:
       return MaterialPageRoute(
@@ -54,6 +55,12 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         settings: routeSettings,
         builder: (_) => ProductDetailsScreen(product: product),
       );
+      case AddressScreen.routeName:
+      var totalAmount = routeSettings.arguments as String;
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (_) => AddressScreen(totalAmount: totalAmount,),
+      ); 
     //We can do an Error Page at the end for default
     default:
       return MaterialPageRoute(
