@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_amazon_clone/common/widgets/custom_text_field.dart';
 import 'package:flutter_amazon_clone/constants/config.dart';
 import 'package:flutter_amazon_clone/constants/global_variables.dart';
+import 'package:flutter_amazon_clone/constants/utils.dart';
+import 'package:flutter_amazon_clone/features/address/services/address_services.dart';
+import 'package:flutter_amazon_clone/providers/user_provider.dart';
 import 'package:pay/pay.dart';
+import 'package:provider/provider.dart';
 
 class AddressScreen extends StatefulWidget {
   final String totalAmount;
@@ -29,6 +33,8 @@ class _AddressScreenState extends State<AddressScreen> {
       PaymentConfiguration.fromJsonString(defaultGooglePay);
 
   List<PaymentItem> paymentItems = [];
+  String addressToBeUsed = '';
+  final AddressServices addressServices = AddressServices();
 
   @override
   void initState() {
@@ -51,13 +57,61 @@ class _AddressScreenState extends State<AddressScreen> {
     cityController.dispose();
   }
 
-  void onApplePayResult(res) {}
+  void onApplePayResult(res) {
+    if (Provider.of<UserProvider>(context, listen: false)
+        .user
+        .address
+        .isEmpty) {
+      addressServices.saveUserAddress(
+          context: context, address: addressToBeUsed);
+    }
+    addressServices.placeOrder(
+      context: context,
+      address: addressToBeUsed,
+      totalAmount: double.parse(widget.totalAmount),
+    );
+  }
 
-  void onGooglePayResult(res) {}
+  void onGooglePayResult(res) {
+    if (Provider.of<UserProvider>(context, listen: false)
+        .user
+        .address
+        .isEmpty) {
+      addressServices.saveUserAddress(
+          context: context, address: addressToBeUsed);
+    }
+    addressServices.placeOrder(
+      context: context,
+      address: addressToBeUsed,
+      totalAmount: double.parse(widget.totalAmount),
+    );
+  }
+
+  void payPressed(String addressFromProvider) {
+    addressToBeUsed = '';
+
+    bool isFormFilled = flatBuildingController.text.isNotEmpty ||
+        areaController.text.isNotEmpty ||
+        pincodeController.text.isNotEmpty ||
+        cityController.text.isNotEmpty;
+
+    if (isFormFilled) {
+      if (_addressSignUpFormKey.currentState!.validate()) {
+        addressToBeUsed =
+            '${flatBuildingController.text}, ${areaController.text}, ${pincodeController.text}, ${cityController.text}';
+      } else {
+        throw Exception('Please fill the form');
+      }
+    } else if (addressFromProvider.isNotEmpty) {
+      addressToBeUsed = addressFromProvider;
+    } else {
+      showSnackBar(context, 'ERROR');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    var address = '101 Fake Address, Fake City, Fake Country';
+    var address = context.watch<UserProvider>().user.address;
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(60),
@@ -134,6 +188,10 @@ class _AddressScreenState extends State<AddressScreen> {
                   )),
               if (Theme.of(context).platform == TargetPlatform.iOS)
                 ApplePayButton(
+                  onPressed: () {
+                    payPressed(address);
+                    onApplePayResult(null);
+                  },
                   paymentConfiguration:
                       PaymentConfiguration.fromJsonString(defaultApplePay),
                   paymentItems: paymentItems,
@@ -146,6 +204,9 @@ class _AddressScreenState extends State<AddressScreen> {
                   ),
                 ),
               GooglePayButton(
+                onPressed: () {
+                  payPressed(address);
+                },
                 width: double.maxFinite,
                 paymentConfiguration:
                     PaymentConfiguration.fromJsonString(defaultGooglePay),
