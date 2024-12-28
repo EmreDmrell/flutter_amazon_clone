@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_amazon_clone/features/address/screen/address_screen.dart';
 import 'package:flutter_amazon_clone/features/auth/screens/auth_screen.dart';
+import 'package:flutter_amazon_clone/features/cart/screens/cart_screen.dart';
 import 'package:flutter_amazon_clone/features/home/screens/category_deal_screen.dart';
 import 'package:flutter_amazon_clone/features/home/screens/home_screen.dart';
+import 'package:flutter_amazon_clone/features/order_details/screens/order_detail_screen.dart';
 import 'package:flutter_amazon_clone/features/product_details/screens/product_details_screen.dart';
+import 'package:flutter_amazon_clone/models/order/order.dart';
 import 'common/widgets/bottom_bar.dart';
 import 'features/admin/screens/add_product_screen.dart';
 import 'features/admin/screens/admin_screen.dart';
@@ -61,6 +64,17 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         settings: routeSettings,
         builder: (_) => AddressScreen(totalAmount: totalAmount,),
       ); 
+      case OrderDetailScreen.routeName:
+      var order = routeSettings.arguments as Order;
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (_) => OrderDetailScreen(order: order),
+      );
+      case CartScreen.routeName:
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (_) => const CartScreen(),
+      );
     //We can do an Error Page at the end for default
     default:
       return MaterialPageRoute(

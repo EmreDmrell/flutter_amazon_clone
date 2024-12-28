@@ -130,4 +130,11 @@ userRouter.post(
   })
 );
 
+// Get my orders
+
+userRouter.get('/api/orders/me', auth_middleware, asyncHandler(async (req, res) => {
+  const orders = await Order.find({ userId: req.user });
+  res.json(orders);
+}));
+
 module.exports = userRouter;
