@@ -4,7 +4,6 @@ import 'package:flutter_amazon_clone/constants/global_variables.dart';
 import 'package:flutter_amazon_clone/features/admin/services/admin_services.dart';
 import 'package:flutter_amazon_clone/features/search/screens/search_screen.dart';
 import 'package:flutter_amazon_clone/models/order/order.dart';
-import 'package:flutter_amazon_clone/models/user/user.dart';
 import 'package:flutter_amazon_clone/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';

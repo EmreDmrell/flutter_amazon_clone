@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_amazon_clone/common/widgets/loader.dart';
 import 'package:flutter_amazon_clone/constants/global_variables.dart';
