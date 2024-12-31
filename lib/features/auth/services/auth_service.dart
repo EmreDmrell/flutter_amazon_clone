@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_amazon_clone/constants/errorHandling.dart';
 import 'package:flutter_amazon_clone/constants/config.dart';
 import 'package:flutter_amazon_clone/constants/utils.dart';
+import 'package:flutter_amazon_clone/features/admin/screens/admin_screen.dart';
 import 'package:flutter_amazon_clone/models/User/user.dart';
 import 'package:flutter_amazon_clone/providers/user_provider.dart';
 import 'package:http/http.dart' as http;
@@ -80,10 +81,23 @@ class AuthService {
             await prefs.setString(
                 'x-auth-token', jsonDecode(response.body)['token']);
             if (context.mounted) {
-              Provider.of<UserProvider>(context, listen: false)
-                  .setUser(response.body);
-              Navigator.pushNamedAndRemoveUntil(
-                  context, BottomBar.routeName, (route) => false);
+              var userProvider =
+                  Provider.of<UserProvider>(context, listen: false);
+              userProvider.setUser(response.body);
+              var user = userProvider.user;
+              if (user.type == 'admin') {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  AdminScreen.routeName,
+                  (route) => false,
+                );
+              } else {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  BottomBar.routeName,
+                  (route) => false,
+                );
+              }
             }
           },
         );

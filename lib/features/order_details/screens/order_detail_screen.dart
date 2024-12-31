@@ -34,7 +34,16 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
   // Only for admin (status change)
 
-  void changeOrderStatus(int status) async {}
+  void updateOrderStatus(int status) async {
+    adminServices.updateOrderStatus(
+      context: context,
+      order: widget.order,
+      status: status +1,
+    );
+    setState(() {
+      currentStep += 1;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -190,7 +199,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     if (user.type == 'admin') {
                       return CustomButton(
                         text: 'Done',
-                        onTap: () => changeOrderStatus(details.currentStep),
+                        onTap: () => updateOrderStatus(details.currentStep),
                       );
                     }
                     return const SizedBox();

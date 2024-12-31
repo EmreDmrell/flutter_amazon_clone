@@ -6,6 +6,7 @@ import 'package:flutter_amazon_clone/constants/config.dart';
 import 'package:flutter_amazon_clone/constants/errorHandling.dart';
 import 'package:flutter_amazon_clone/constants/utils.dart';
 import 'package:cloudinary_public/cloudinary_public.dart';
+import 'package:flutter_amazon_clone/models/order/order.dart';
 import 'package:flutter_amazon_clone/models/product/product.dart';
 import 'package:flutter_amazon_clone/providers/product_provider.dart';
 import 'package:flutter_amazon_clone/providers/user_provider.dart';
@@ -28,7 +29,8 @@ class AdminServices {
       List<String> imageUrls = [];
 
       for (int i = 0; i < images.length; i++) {
-        CloudinaryResponse res = await cloudinary.uploadFile(CloudinaryFile.fromFile(images[i].path, folder: name));
+        CloudinaryResponse res = await cloudinary
+            .uploadFile(CloudinaryFile.fromFile(images[i].path, folder: name));
         imageUrls.add(res.secureUrl);
       }
 
@@ -43,11 +45,14 @@ class AdminServices {
 
       http.Response res = await http.post(
         Uri.parse('$homeIpAddress/admin/add-product'),
-        headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8', 'x-auth-token': userProvider.user.token},
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': userProvider.user.token
+        },
         body: jsonEncode(product.toJson()),
       );
 
-      if(context.mounted){
+      if (context.mounted) {
         httpErrorHandle(
           response: res,
           context: context,
@@ -58,38 +63,40 @@ class AdminServices {
           },
         );
       }
-
     } catch (e) {
-      if(context.mounted) showSnackBar(context, e.toString());
+      if (context.mounted) showSnackBar(context, e.toString());
     }
   }
 
-  Future<void> fetchAllProducts(BuildContext context) async {
+  Future<void> fetchAllProducts({required BuildContext context}) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     context.read<ProductProvider>().resetProductList();
     try {
       http.Response res = await http.get(
         Uri.parse('$homeIpAddress/admin/get-products'),
-        headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8', 'x-auth-token': userProvider.user.token},
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': userProvider.user.token
+        },
       );
 
-      if(context.mounted){
+      if (context.mounted) {
         httpErrorHandle(
           response: res,
           context: context,
           onSuccess: () {
             for (int i = 0; i < jsonDecode(res.body).length; i++) {
               context.read<ProductProvider>().addProduct(
-                Product.fromJson(
-                  jsonDecode(res.body)[i],
-                ),
-              );
+                    Product.fromJson(
+                      jsonDecode(res.body)[i],
+                    ),
+                  );
             }
           },
         );
       }
     } catch (e) {
-      if(context.mounted) showSnackBar(context, e.toString());
+      if (context.mounted) showSnackBar(context, e.toString());
     }
   }
 
@@ -101,13 +108,13 @@ class AdminServices {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     try {
       http.Response res = await http.delete(
-          Uri.parse('$homeIpAddress/admin/delete-product/${product.id}'),
-          headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-            'x-auth-token': userProvider.user.token,
-          },
+        Uri.parse('$homeIpAddress/admin/delete-product/${product.id}'),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': userProvider.user.token,
+        },
       );
-      if(context.mounted){
+      if (context.mounted) {
         httpErrorHandle(
           response: res,
           context: context,
@@ -116,9 +123,67 @@ class AdminServices {
           },
         );
       }
-
     } catch (e) {
-      if(context.mounted) showSnackBar(context, e.toString());
+      if (context.mounted) showSnackBar(context, e.toString());
+    }
+  }
+
+  Future<List<Order>> fetchAllOrders({required BuildContext context}) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    List<Order> orders = [];
+    try {
+      http.Response res = await http.get(
+        Uri.parse('$homeIpAddress/admin/get-orders'),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': userProvider.user.token,
+        },
+      );
+
+      if (context.mounted) {
+        httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () {
+            for (int i = 0; i < jsonDecode(res.body).length; i++) {
+              orders.add(Order.fromJson(jsonDecode(res.body)[i]));
+            }
+          },
+        );
+      }
+    } catch (e) {
+      if (context.mounted) showSnackBar(context, e.toString());
+    }
+    return orders;
+  }
+  
+  void updateOrderStatus({
+    required BuildContext context,
+    required int status,
+    required Order order,
+  }) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    try {
+      http.Response res = await http.put(
+        Uri.parse('$homeIpAddress/admin/update-order-status/${order.id}'),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': userProvider.user.token,
+        },
+        body: jsonEncode({'status': status}),
+      );
+
+      if (context.mounted) {
+        httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () {
+            showSnackBar(context, 'Order status changed successfully');
+          },
+        );
+      }
+    } catch (e) {
+      if (context.mounted) showSnackBar(context, e.toString());
     }
   }
 }

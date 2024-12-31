@@ -27,7 +27,7 @@ class _PostsScreenState extends State<PostsScreen> {
 
 
   fetchAllProducts() async{
-    await adminServices.fetchAllProducts(context);
+    await adminServices.fetchAllProducts(context: context);
   }
 
   void deleteProduct(Product product, int index){

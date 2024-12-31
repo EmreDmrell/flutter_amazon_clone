@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_amazon_clone/constants/global_variables.dart';
+import 'package:flutter_amazon_clone/features/account/services/account_services.dart';
+import 'package:flutter_amazon_clone/features/admin/screens/orders_screen.dart';
 import 'package:flutter_amazon_clone/features/admin/screens/posts_screen.dart';
-
+import 'package:flutter_amazon_clone/features/auth/services/auth_service.dart';
+import 'package:flutter_amazon_clone/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class AdminScreen extends StatefulWidget {
   static const String routeName = '/admin-page';
@@ -16,6 +20,7 @@ class _AdminPageState extends State<AdminScreen> {
   int _page = 0;
   double adminPageWidth = 42;
   double adminPageBorderWidth = 5;
+  AccountServices accountServices = AccountServices();
 
   List<Widget> pages = [
     const PostsScreen(),
@@ -24,17 +29,17 @@ class _AdminPageState extends State<AdminScreen> {
         child: Text('Post Screen'),
       ),
     ),
-    const Scaffold(
-      body: Center(
-        child: Text("Cart Screen"),
-      ),
-    )
+    const OrdersScreen(),
   ];
 
   void updatePage(int page) {
     setState(() {
       _page = page;
     });
+  }
+
+  void logOut() {
+    accountServices.logout(context: context);
   }
 
   @override
@@ -44,6 +49,12 @@ class _AdminPageState extends State<AdminScreen> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50),
         child: AppBar(
+          actions: [
+            IconButton(
+              onPressed: logOut,
+              icon: const Icon(Icons.logout),
+            ),
+          ],
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: GlobalVariables.appBarGradient,
@@ -63,10 +74,8 @@ class _AdminPageState extends State<AdminScreen> {
               ),
               const Text(
                 'Admin',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold
-                ),
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -89,14 +98,17 @@ class _AdminPageState extends State<AdminScreen> {
     );
   }
 
-  BottomNavigationBarItem buildBottomNavigationBarItem(Icon icon, int page, {bool badge = false, int cartLen = 4}) {
+  BottomNavigationBarItem buildBottomNavigationBarItem(Icon icon, int page,
+      {bool badge = false, int cartLen = 4}) {
     return BottomNavigationBarItem(
       icon: Container(
         width: adminPageWidth,
         decoration: BoxDecoration(
             border: Border(
           top: BorderSide(
-            color: _page == page ? GlobalVariables.selectedNavBarColor : GlobalVariables.backgroundColor,
+            color: _page == page
+                ? GlobalVariables.selectedNavBarColor
+                : GlobalVariables.backgroundColor,
             width: adminPageBorderWidth,
           ),
         )),
