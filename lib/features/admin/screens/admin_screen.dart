@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_amazon_clone/constants/global_variables.dart';
 import 'package:flutter_amazon_clone/features/account/services/account_services.dart';
+import 'package:flutter_amazon_clone/features/admin/screens/analytics_screen.dart';
 import 'package:flutter_amazon_clone/features/admin/screens/orders_screen.dart';
 import 'package:flutter_amazon_clone/features/admin/screens/posts_screen.dart';
 
@@ -21,11 +22,7 @@ class _AdminPageState extends State<AdminScreen> {
 
   List<Widget> pages = [
     const PostsScreen(),
-    const Scaffold(
-      body: Center(
-        child: Text('Post Screen'),
-      ),
-    ),
+    const AnalyticsScreen(),
     const OrdersScreen(),
   ];
 
@@ -41,7 +38,6 @@ class _AdminPageState extends State<AdminScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //final userCartLen = context.watch<UserProvider>().user.cart.length;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50),
@@ -96,7 +92,7 @@ class _AdminPageState extends State<AdminScreen> {
   }
 
   BottomNavigationBarItem buildBottomNavigationBarItem(Icon icon, int page,
-      {bool badge = false, int cartLen = 4}) {
+      ) {
     return BottomNavigationBarItem(
       icon: Container(
         width: adminPageWidth,
