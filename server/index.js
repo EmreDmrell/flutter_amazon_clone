@@ -14,7 +14,7 @@ const mongoDbURI = require('./constants/database_variables');
 
 //INIT
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const app = express();
 const MONGO_DB_URI = mongoDbURI;
 
