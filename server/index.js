@@ -2,6 +2,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const errorHandler = require('./middlewares/error_handler');
+require('dotenv').config();
 
 
 //Import from other files 
@@ -10,13 +11,13 @@ const authRouter = require('./routes/auth');
 const adminRouter = require('./routes/admin');
 const productRouter = require('./routes/product');
 const userRouter = require('./routes/user');
-const mongoDbURI = require('./constants/database_variables');
+
 
 //INIT
 
 const PORT = process.env.PORT || 3000;
 const app = express();
-const MONGO_DB_URI = mongoDbURI;
+const MONGO_DB_URI = process.env.MONGO_DB_URI;
 
 //middleware 
 

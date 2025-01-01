@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
-const cryptValues = require('../constants/hash_password_variables');
 const User = require('../models/user');
+require('dotenv').config();
+const jwtKey = process.env.JWT_KEY;
 
 const verifyToken = async (token) => {
-    const verified = jwt.verify(token, cryptValues.jwtKey);
+    const verified = jwt.verify(token, jwtKey);
     if (!verified) {
         throw new Error("Token verification failed. Authorization denied");
     }

@@ -5,10 +5,11 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const asyncHandler = require('../utils/async_handler');
 const auth_middleware = require('../middlewares/auth_middleware');
-const cryptValues = require('../constants/hash_password_variables');
+require('dotenv').config();
 
 const authRouter = express.Router();
-const saltRound = cryptValues.saltRounds;
+const saltRound = process.env.SALT_ROUND;
+const jwtKey = process.env.JWT_KEY;
 
 // Register a new user
 authRouter.post("/api/signup", [
@@ -64,7 +65,7 @@ authRouter.post("/api/signin", [
         return res.status(400).json({ msg: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ id: user._id }, cryptValues.jwtKey);
+    const token = jwt.sign({ id: user._id }, jwtKey);
     res.json({ token, ...user._doc });
 }));
 
@@ -73,7 +74,7 @@ authRouter.post("/tokenIsValid", asyncHandler(async (req, res) => {
     const token = req.header('x-auth-token');
     if (!token) return res.json(false);
 
-    const verified = jwt.verify(token, cryptValues.jwtKey);
+    const verified = jwt.verify(token, jwtKey);
     if (!verified) return res.json(false);
 
     const user = await User.findById(verified.id);
