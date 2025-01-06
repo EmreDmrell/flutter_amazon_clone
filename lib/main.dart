@@ -8,10 +8,8 @@ import 'package:flutter_amazon_clone/providers/product_provider.dart';
 import 'package:flutter_amazon_clone/providers/user_provider.dart';
 import 'package:flutter_amazon_clone/router.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-Future<void> main() async{
-  await dotenv.load(fileName: ".env");
+void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(
       create: (context) => UserProvider(),
